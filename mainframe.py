@@ -3,6 +3,7 @@
 from pymongo import MongoClient
 import pandas as pd
 from getpass import getpass
+from controller import Controller
 
 
 class Mainframe():
@@ -62,56 +63,53 @@ class Mainframe():
 
     # TODO: move follow to a pandas type class?
 
-    def get_collection(self, name, query={}):
+    def get_collection(self, name, query={}, no_id=True, no_index=True):
         print(
             f"Getting collection {name} from {self.db_name} using query {query}")
         cursor = self.db[name].find(query)
         collection = pd.DataFrame(list(cursor))
+
+        if no_id:
+            del collection['_id']
+
+        if no_index:
+            del collection['index']
         return collection
 
-    def get_series(self, collection, query={}):
-        print(f"Getting series from {collection.name} using query {query}")
-        return collection.get("START_DT")
+    # find_worst_inter("2016")
+    # find_worst_inter("2017")
+    # find_worst_inter("2018")
+
+    # TrafficFlow2016_OpenData.csv
+    # 2017_Traffic_Volume_Flow.csv
+    # Traffic_Volumes_for_2018.csv
 
 
 def main():
-    incidents = "Traffic_Incidents"
     mainframe = Mainframe("calgaryTraffic")
     mainframe.drop_db()
     mainframe.load_data("Traffic_Incidents.csv")
     mainframe.load_data("TrafficFlow2016_OpenData.csv")
     mainframe.load_data("2017_Traffic_Volume_Flow.csv")
     mainframe.load_data("Traffic_Volumes_for_2018.csv")
-
-    mainframe.display_CLI()
-
-    mainframe.init_db()
     mainframe.push_data()
 
-    incidents_frame = mainframe.get_collection(incidents)
-    print(incidents_frame)
+    ctrl = Controller(mainframe)
 
-    def find_worst_inter(year):
-        data = mainframe.get_collection(
-            "Traffic_Incidents", {'START_DT': {'$regex': year}})
+    vol16 = ctrl.get_volume("2016")
+    print(vol16)
 
-        info = data.get("INCIDENT INFO")
-        hist = {}
-        for index, content in info.items():
-            hist[content] = hist.get(content, 0) + 1
+    vol17 = ctrl.get_volume("2017")
+    print(vol17)
 
-        sorted_hist = {k: v for k, v in sorted(
-            hist.items(), key=lambda x: x[1], reverse=True)}
-        print(list(sorted_hist.items())[:10])
-        print('\n')
+    vol18 = ctrl.get_volume("2018")
+    print(vol18)
 
-    find_worst_inter("2016")
-    find_worst_inter("2017")
-    find_worst_inter("2018")
+    inc16 = ctrl.get_incident("incidents", "2016")
+    print(inc16)
 
-    # TrafficFlow2016_OpenData.csv
-    # 2017_Traffic_Volume_Flow.csv
-    # Traffic_Volumes_for_2018.csv
+    inc17 = ctrl.get_incident("incidents", "2017")
+    print(inc17)
 
 
 if __name__ == "__main__":
