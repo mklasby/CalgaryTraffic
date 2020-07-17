@@ -1,0 +1,25 @@
+db.calgaryTraffic.insert({
+    title: 'Post one',
+    body: 'Body of post',
+    category: 'News',
+    likes: 4, 
+    tags: ['news','events'],
+    user: {
+        name: 'John Doe',
+        status: 'author'
+    },
+    
+    date: Date()
+
+})
+
+db.calgaryTraffic.update({title: "Post Two"},
+{ title:'Post Two', body: 'new post 2 body' , date: Date() })
+
+db.calgaryTraffic.update({title: "Post Two"},{
+        $set: {
+            body: 'Body of Post Two',
+            category: 'Tech'
+        }
+    }
+)
