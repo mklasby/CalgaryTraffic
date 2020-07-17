@@ -11,10 +11,11 @@ class Mainframe():
     A collection of pd.Dataframe objects used for interacting with a single database in a single cluster
     '''
 
-    def __init__(self, db_name="default"):
+    def __init__(self, db_name="default", local=True):
         self.data_frames = []
         self.db_name = db_name
         self.cluster = False
+        self.local = local
 
     def load_data(self, name):
         data_frame = pd.read_csv(name)
@@ -30,18 +31,18 @@ class Mainframe():
             print(data.shape)
             print(data.head())
 
-    def init_db(self, local=True):
-        if local:
+    def init_db(self):
+        if self.local:
             # local cluster
             print("Connecting to local cluster")
             self.cluster = MongoClient(
                 'mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass&ssl=false')
         else:
             # cloud cluster
-            print("Conntect to Mongo Atlas cluster")
+            print("Connecting to Mongo Atlas cluster")
             pw = getpass("Enter DB Password >>> ")
-            self.clustercluster = MongoClient('mongodb+srv://mklasby:' + pw
-                                              + '@cluster0.hkive.mongodb.net/<dbname>?retryWrites=true&w=majority')
+            self.cluster = MongoClient('mongodb+srv://mklasby:' + pw
+                                       + '@cluster0.hkive.mongodb.net/<dbname>?retryWrites=true&w=majority')
         # creates db named db_name within my cluster
         self.db = self.cluster[self.db_name]
 
@@ -78,26 +79,19 @@ class Mainframe():
 
 
 def main():
-
-    mainframe = Mainframe("calgaryTraffic")
+    '''will load data if called as main'''
+    response = input("Save to local?[y/n]: ")
+    if response == ("y" or "Y"):
+        mainframe = Mainframe("calgaryTraffic")
+    else:
+        mainframe = Mainframe("calgaryTraffic", local=False)
     mainframe.drop_db()
     mainframe.load_data("Traffic_Incidents.csv")
     mainframe.load_data("TrafficFlow2016_OpenData.csv")
     mainframe.load_data("2017_Traffic_Volume_Flow.csv")
     mainframe.load_data("Traffic_Volumes_for_2018.csv")
     mainframe.push_data()
-
-    ctrl = Controller(mainframe)
-    vol16 = ctrl.get_volume("2016")
-    print(vol16)
-    vol17 = ctrl.get_volume("2017")
-    print(vol17)
-    vol18 = ctrl.get_volume("2018")
-    print(vol18)
-    inc16 = ctrl.get_incident("incidents", "2016")
-    print(inc16)
-    inc17 = ctrl.get_incident("incidents", "2017")
-    print(inc17)
+    print("Data successfully loaded")
 
 
 if __name__ == "__main__":
