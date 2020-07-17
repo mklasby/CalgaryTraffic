@@ -76,13 +76,15 @@ class Mainframe():
 def main():
     mainframe = Mainframe()
     mainframe.load_data("Traffic_Incidents.csv")
-    mainframe.load_data("")
+    mainframe.load_data("TrafficFlow2016_OpenData.csv")
+    mainframe.load_data("2017_Traffic_Volume_Flow.csv")
+    mainframe.load_data("Traffic_Volumes_for_2018.csv")
+
     mainframe.display_CLI()
+    mainframe.init_db()
 
     # TrafficFlow2016_OpenData.csv
     # 2017_Traffic_Volume_Flow.csv
-    # Traffic_Incidents_Archive_2016.csv
-    # Traffic_Incidents_Archive_2017.csv
     # Traffic_Volumes_for_2018.csv
 
 
