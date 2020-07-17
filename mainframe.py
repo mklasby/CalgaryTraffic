@@ -3,12 +3,12 @@
 from pymongo import MongoClient
 import pandas as pd
 from getpass import getpass
-from controller import Controller
+from controller import Controller  # not required once main is moved to app
 
 
 class Mainframe():
     '''
-    A collection of pd.Dataframe objects used for interacting with database
+    A collection of pd.Dataframe objects used for interacting with a single database in a single cluster
     '''
 
     def __init__(self, db_name="default"):
@@ -76,16 +76,9 @@ class Mainframe():
             del collection['index']
         return collection
 
-    # find_worst_inter("2016")
-    # find_worst_inter("2017")
-    # find_worst_inter("2018")
-
-    # TrafficFlow2016_OpenData.csv
-    # 2017_Traffic_Volume_Flow.csv
-    # Traffic_Volumes_for_2018.csv
-
 
 def main():
+
     mainframe = Mainframe("calgaryTraffic")
     mainframe.drop_db()
     mainframe.load_data("Traffic_Incidents.csv")
@@ -95,19 +88,14 @@ def main():
     mainframe.push_data()
 
     ctrl = Controller(mainframe)
-
     vol16 = ctrl.get_volume("2016")
     print(vol16)
-
     vol17 = ctrl.get_volume("2017")
     print(vol17)
-
     vol18 = ctrl.get_volume("2018")
     print(vol18)
-
     inc16 = ctrl.get_incident("incidents", "2016")
     print(inc16)
-
     inc17 = ctrl.get_incident("incidents", "2017")
     print(inc17)
 
