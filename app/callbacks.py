@@ -1,4 +1,5 @@
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 from app import app, mainframe, ctrl
 import pandas as pd
 import plotly.express as px
@@ -25,10 +26,28 @@ def update_data(data, year):
         filtered_data = ctrl.get_volume(year)
     return filtered_data.to_json(date_format='iso', orient='split')
 
-# #if read data, then load read page with graph of requested data
-# @app.callback(path_name
-#     Output('content','children')
-# )
+
+# update read_table
+@app.callback(
+    Output('read_table', 'children'),
+    [Input('data', 'children')])
+def update_read_table(filtered_data):
+    updated_data = pd.read_json(filtered_data, orient='split')
+    table = dbc.Table.from_dataframe(
+        updated_data, striped=True, bordered=True, hover=True)
+    return table
+
+
+# update sort_table
+@app.callback(
+    Output('sort_table', 'children'),
+    [Input('data', 'children')])
+def update_sort_table(filtered_data):
+    updated_data = pd.read_json(filtered_data, orient='split')
+    sorted_data = ctrl.sort_volume(updated_data)
+    table = dbc.Table.from_dataframe(
+        sorted_data, striped=True, bordered=True, hover=True)
+    return table
 
 
 @ app.callback(

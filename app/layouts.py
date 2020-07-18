@@ -69,7 +69,9 @@ sidebar = html.Div(
             'TEST',
             id='status bar',
         ),
-        html.Div(id='data')
+        # HIDDEN DIV USED TO STORE FILTERED DATA ACROSS PAGES
+        # SEE: https://dash.plotly.com/sharing-data-between-callbacks
+        html.Div(id='data', style={'display': 'none'})
     ],
     style=SIDEBAR_STYLE,
 )
@@ -87,11 +89,7 @@ read_view = html.Div(
     [
         html.H4('READ PAGE'),
         html.Hr(),
-        # dash_table.DataTable(
-        #     id='table',
-        #     columns=[{'name': i, 'id': i} for i in ctrl.get_volume('2016')],
-        #     data=ctrl.get_volume(2016).to_dict('records')
-        # )
+        html.Div(id='read_table')  # container target for callback response
     ],
     style=CONTENT_STYLE
 )
@@ -100,7 +98,7 @@ sort_view = html.Div(
     [
         html.H4('SORT PAGE'),
         html.Hr(),
-        html.Div(id='content'),
+        html.Div(id='sort_table'),
     ],
     style=CONTENT_STYLE
 )

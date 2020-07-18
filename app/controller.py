@@ -27,11 +27,16 @@ class Controller():
             print("NO YEAR FOUND")
             return -1
 
-    def get_volume(self, year):
+    def get_volume(self, year, sort=False):
         '''returns pd.DataFrame object of volume for requested year'''
         name = self.find_table(year)
         vol = self.mainframe.get_collection(name)
-        #vol = vol.sort_values(by='volume', ascending=False)
+        return vol
+
+    def sort_volume(self, vol):
+        vol = vol.sort_values(by='volume', ascending=False)
+        print('from sort_volume')
+        print(vol)
         return vol
 
     def get_incident(self, name, year):
