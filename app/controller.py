@@ -8,9 +8,8 @@ class Controller():
     '''class to act as middle man b/w app and mainframe. Need to be passes these
     as references'''
 
-    def __init__(self, mainframe, app=None):
+    def __init__(self, mainframe):
         self.mainframe = mainframe  # mainframe class
-        self.app = app  # app class
 
     def find_table(self, name):
         '''returns text string of collection name in db
@@ -32,7 +31,7 @@ class Controller():
         '''returns pd.DataFrame object of volume for requested year'''
         name = self.find_table(year)
         vol = self.mainframe.get_collection(name)
-        vol = vol.sort_values(by='volume', ascending=False)
+        #vol = vol.sort_values(by='volume', ascending=False)
         return vol
 
     def get_incident(self, name, year):

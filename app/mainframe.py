@@ -3,6 +3,7 @@
 from pymongo import MongoClient
 import pandas as pd
 from getpass import getpass
+from os import path
 
 
 class Mainframe():
@@ -18,7 +19,8 @@ class Mainframe():
 
     def load_data(self, name):
         data_frame = pd.read_csv(name)
-        data_frame.name = name.split('.')[0]
+        head, tail = path.split(name)
+        data_frame.name = tail.split('.')[0]
         print("Loading: "+data_frame.name)
         self.data_frames.append(data_frame)
 

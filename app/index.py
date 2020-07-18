@@ -1,11 +1,10 @@
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-from mainframe import Mainframe
-from controller import Controller
-from app import app
+from app import app, mainframe, ctrl
 from layouts import *
 import callbacks
+
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
@@ -35,12 +34,8 @@ def display_page(pathname):
 
 
 if __name__ == '__main__':
+    # '''NOTE: if running server in debug mode,the db will be loaded on each 'hot update'''
+    # mainframe = callbacks.load_data(
+    #     'calgaryTraffic')  # inits DB and controler object
+    print(mainframe)
     app.run_server(debug=True)
-    mainframe = Mainframe("calgaryTraffic")
-    mainframe.drop_db()
-    mainframe.load_data("Traffic_Incidents.csv")
-    mainframe.load_data("TrafficFlow2016_OpenData.csv")
-    mainframe.load_data("2017_Traffic_Volume_Flow.csv")
-    mainframe.load_data("Traffic_Volumes_for_2018.csv")
-    mainframe.push_data()
-    ctrl = Controller(mainframe)

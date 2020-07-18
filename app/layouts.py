@@ -1,31 +1,42 @@
+# Views
+
+from mainframe import Mainframe
+from controller import Controller
+from app import mainframe, ctrl
+import plotly.express as px
+import plotly.graph_objects as go
+import pandas as pd
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
+import dash_table
 
 SIDEBAR_STYLE = {
-    "height": "100%",
-    "width": "16rem",  # Set the width of the sidebar
-    "position": "fixed",  # Fixed Sidebar (stay in place on scroll)
-    "z-index": 1,  # Stay on top
-    "top": 0,  # Stay at the top
-    "left": 0,
-    "overflow-x": "hidden",  # Disable horizontal scroll
-    "padding": "4rem 2rem",
-    "background-color": "#2A9FD6",
+    'height': '100%',
+    'width': '16rem',  # Set the width of the sidebar
+    'position': 'fixed',  # Fixed Sidebar (stay in place on scroll)
+    'z-index': 1,  # Stay on top
+    'top': 0,  # Stay at the top
+    'left': 0,
+    'overflow-x': 'hidden',  # Disable horizontal scroll
+    'padding': '4rem 2rem',
+    'background-color': '#2A9FD6',
 }
 
 CONTENT_STYLE = {
-    "margin-left": "18rem",
-    "margin-right": "4rem",
-    "padding": "4rem 2rem",
+    'margin-left': '18rem',
+    'margin-right': '4rem',
+    'padding': '4rem 2rem',
 }
 sidebar = html.Div(
     [
-        html.H4("Calgary Traffic Analysis",
+        html.H4('Calgary Traffic Analysis',
                 ),
         html.Hr(),
         html.P(
-            "ENSF 592 Final Project",
+            [
+                'ENSF 592 Final Project', html.Br(), 'By: Mike Lasby'],
+            style={'color': 'white'}
         ),
         dcc.Dropdown(
             id='data_selection',
@@ -38,11 +49,11 @@ sidebar = html.Div(
         dcc.Dropdown(
             id='year_selection',
             options=[
-                {'label': '2016', 'value': 2016},
-                {'label': '2017', 'value': 2017},
-                {'label': '2018', 'value': 2018},
+                {'label': '2016', 'value': '2016'},
+                {'label': '2017', 'value': '2017'},
+                {'label': '2018', 'value': '2018'},
             ],
-            value=2016
+            value='2016'
         ),
         dbc.Nav(
             [
@@ -54,22 +65,20 @@ sidebar = html.Div(
             vertical=True,
             pills=True,
         ),
+        dbc.Alert(
+            'TEST',
+            id='status bar',
+        ),
+        html.Div(id='data')
     ],
     style=SIDEBAR_STYLE,
 )
-
-
-# home = html.Div([
-#     html.H1("Welcome to the home page"),
-#     html.Div(id='content')
-#  ], style=CONTENT_STYLE])
-
 
 home = html.Div(
     [
         html.H4('HOME PAGE'),
         html.Hr(),
-        html.Div(id="content"),
+        html.Div(id='content'),
     ],
     style=CONTENT_STYLE
 )
@@ -78,7 +87,11 @@ read_view = html.Div(
     [
         html.H4('READ PAGE'),
         html.Hr(),
-        html.Div(id="content"),
+        # dash_table.DataTable(
+        #     id='table',
+        #     columns=[{'name': i, 'id': i} for i in ctrl.get_volume('2016')],
+        #     data=ctrl.get_volume(2016).to_dict('records')
+        # )
     ],
     style=CONTENT_STYLE
 )
@@ -87,7 +100,7 @@ sort_view = html.Div(
     [
         html.H4('SORT PAGE'),
         html.Hr(),
-        html.Div(id="content"),
+        html.Div(id='content'),
     ],
     style=CONTENT_STYLE
 )
@@ -96,7 +109,7 @@ map_view = html.Div(
     [
         html.H4('MAP PAGE'),
         html.Hr(),
-        html.Div(id="content"),
+        html.Div(id='content'),
     ],
     style=CONTENT_STYLE
 )
@@ -105,7 +118,7 @@ analysis_view = html.Div(
     [
         html.H4('ANALYSIS PAGE'),
         html.Hr(),
-        html.Div(id="content"),
+        html.Div(id='content'),
     ],
     style=CONTENT_STYLE
 )
