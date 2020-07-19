@@ -39,10 +39,13 @@ class Controller():
         print(vol)
         return vol
 
-    def get_incident(self, name, year):
+    def get_incident(self, name, year='2016'):
         name = self.find_table(name)
-        incidents = self.mainframe.get_collection(
-            name, {"START_DT": {'$regex': year}})
+        if year == 'all':
+            incidents = self.mainframe.get_collection(name)
+        else:
+            incidents = self.mainframe.get_collection(
+                name, {"START_DT": {'$regex': year}})
         return incidents
         # TODO:HOW TO SORT?
         # incidents = incidents.sort_values(by="")

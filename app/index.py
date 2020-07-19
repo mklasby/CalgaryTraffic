@@ -12,8 +12,9 @@ app.layout = html.Div([
 ])
 
 
-@app.callback(Output('page-content', 'children'),
-              [Input('url', 'pathname')])
+@app.callback(
+    Output('page-content', 'children'),
+    [Input('url', 'pathname')])
 def display_page(pathname):
     if pathname == "/":
         return sidebar, home
@@ -25,10 +26,6 @@ def display_page(pathname):
         return sidebar, analysis_view
     elif pathname == '/map':
         return sidebar, map_view
-    elif pathname == '/apps/app1':
-        return layout1
-    elif pathname == '/apps/app2':
-        return layout2
     else:
         return '404'
 
@@ -38,4 +35,4 @@ if __name__ == '__main__':
     # mainframe = callbacks.load_data(
     #     'calgaryTraffic')  # inits DB and controler object
     print(mainframe)
-    app.run_server(debug=True)
+    app.run_server(debug=False)

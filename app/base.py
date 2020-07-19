@@ -86,7 +86,7 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 #     return [pathname == f"/page-{i}" for i in range(1, 4)]
 # @ app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 # def render_page_content(pathname):
-#     if pathname in ["/", "/page-1"]:
+#     if pathname in ["/", "/page-1"]:b
 #         return html.P("This is the content of page 1!")
 #     elif pathname == "/page-2":
 #         return html.P("This is the content of page 2. Yay!")

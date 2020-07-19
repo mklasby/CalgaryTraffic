@@ -3,6 +3,7 @@
 from mainframe import Mainframe
 from controller import Controller
 from app import mainframe, ctrl
+import folium as fm
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
@@ -44,7 +45,7 @@ sidebar = html.Div(
                 {'label': 'Traffic Volume', 'value': 'vol'},
                 {'label': 'Incidents', 'value': 'inc'},
             ],
-            value='vol'
+            value=None
         ),
         dcc.Dropdown(
             id='year_selection',
@@ -53,7 +54,7 @@ sidebar = html.Div(
                 {'label': '2017', 'value': '2017'},
                 {'label': '2018', 'value': '2018'},
             ],
-            value='2016'
+            value=None
         ),
         dbc.Nav(
             [
@@ -66,8 +67,9 @@ sidebar = html.Div(
             pills=True,
         ),
         dbc.Alert(
-            'TEST',
-            id='status bar',
+            'WELCOME',
+            id='status_bar',
+            color='success'
         ),
         # HIDDEN DIV USED TO STORE FILTERED DATA ACROSS PAGES
         # SEE: https://dash.plotly.com/sharing-data-between-callbacks
@@ -105,9 +107,10 @@ sort_view = html.Div(
 
 map_view = html.Div(
     [
-        html.H4('MAP PAGE'),
-        html.Hr(),
-        html.Div(id='content'),
+        #html.H4('MAP PAGE'),
+        # html.Hr(),
+        html.Iframe(id='map_view', srcDoc=open(
+            './assets/map.html', 'r').read(), height='1200')
     ],
     style=CONTENT_STYLE
 )
@@ -116,38 +119,7 @@ analysis_view = html.Div(
     [
         html.H4('ANALYSIS PAGE'),
         html.Hr(),
-        html.Div(id='content'),
+        html.Div(id='analysis_view'),
     ],
     style=CONTENT_STYLE
 )
-
-
-layout1 = html.Div([
-    html.H3('App 1'),
-    dcc.Dropdown(
-        id='app-1-dropdown',
-        options=[
-            {'label': 'App 1 - {}'.format(i), 'value': i} for i in [
-                'NYC', 'MTL', 'LA'
-            ]
-        ]
-    ),
-    html.Div(id='app-1-display-value'),
-    dcc.Link('Go to App 2', href='/apps/app2')
-],
-    style=CONTENT_STYLE,
-)
-
-layout2 = html.Div([
-    html.H3('App 2'),
-    dcc.Dropdown(
-        id='app-2-dropdown',
-        options=[
-            {'label': 'App 2 - {}'.format(i), 'value': i} for i in [
-                'NYC', 'MTL', 'LA'
-            ]
-        ]
-    ),
-    # html.Div(id='app-2-display-value'),
-    dcc.Link('Go to App 1', href='/apps/app1')
-])
