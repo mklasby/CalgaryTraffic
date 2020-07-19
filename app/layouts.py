@@ -45,7 +45,7 @@ sidebar = html.Div(
                 {'label': 'Traffic Volume', 'value': 'vol'},
                 {'label': 'Incidents', 'value': 'inc'},
             ],
-            value=None
+            value='inc',
         ),
         dcc.Dropdown(
             id='year_selection',
@@ -54,7 +54,7 @@ sidebar = html.Div(
                 {'label': '2017', 'value': '2017'},
                 {'label': '2018', 'value': '2018'},
             ],
-            value=None
+            value='2016'
         ),
         dbc.Nav(
             [
@@ -66,11 +66,15 @@ sidebar = html.Div(
             vertical=True,
             pills=True,
         ),
-        dbc.Alert(
-            'WELCOME',
-            id='status_bar',
-            color='success'
-        ),
+        html.Div([
+            dbc.Alert(
+                'WELCOME',
+                id='status_bar',
+                color='success',
+            ),
+            html.Div(id='alert_container'),
+        ]),
+
         # HIDDEN DIV USED TO STORE FILTERED DATA ACROSS PAGES
         # SEE: https://dash.plotly.com/sharing-data-between-callbacks
         html.Div(id='data', style={'display': 'none'})
@@ -107,7 +111,7 @@ sort_view = html.Div(
 
 map_view = html.Div(
     [
-        #html.H4('MAP PAGE'),
+        # html.H4('MAP PAGE'),
         # html.Hr(),
         html.Iframe(id='map_view', srcDoc=open(
             './assets/map.html', 'r').read(), height='1200')

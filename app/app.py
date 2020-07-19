@@ -15,5 +15,3 @@ mainframe.load_data("./data/2017_Traffic_Volume_Flow.csv")
 mainframe.load_data("./data/Traffic_Volumes_for_2018.csv")
 mainframe.push_data()
 ctrl = Controller(mainframe)
-
-# TODO: pull data from mainframe?

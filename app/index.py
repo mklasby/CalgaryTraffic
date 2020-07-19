@@ -31,8 +31,5 @@ def display_page(pathname):
 
 
 if __name__ == '__main__':
-    # '''NOTE: if running server in debug mode,the db will be loaded on each 'hot update'''
-    # mainframe = callbacks.load_data(
-    #     'calgaryTraffic')  # inits DB and controler object
-    print(mainframe)
+    '''NOTE: if running server in debug mode,the db will be loaded on each 'hot update'''
     app.run_server(debug=False)

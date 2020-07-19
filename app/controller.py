@@ -12,8 +12,7 @@ class Controller():
         self.mainframe = mainframe  # mainframe class
 
     def find_table(self, name):
-        '''returns text string of collection name in db
-        Could be in db class too'''
+        '''returns text string of collection name in db'''
         if name == "2016":
             return "TrafficFlow2016_OpenData"
         elif name == "2017":
@@ -35,8 +34,7 @@ class Controller():
 
     def sort_volume(self, vol):
         vol = vol.sort_values(by='volume', ascending=False)
-        print('from sort_volume')
-        print(vol)
+        print('Sorted Collection')
         return vol
 
     def get_incident(self, name, year='2016'):

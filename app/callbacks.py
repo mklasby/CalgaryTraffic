@@ -27,10 +27,7 @@ def display_selection(data, year):
      Input('year_selection', 'value'),
      ])
 def update_data(data, year):
-    if (data or year) == None:
-        #raise dash.exceptions.PreventUpdate
-        return dash.no_update()
-    elif data == 'inc':
+    if data == 'inc':
         filtered_data = ctrl.get_incident('Traffic_Incidents', year)
     elif data == 'vol':
         filtered_data = ctrl.get_volume(year)
@@ -42,9 +39,9 @@ def update_data(data, year):
     Output('read_table', 'children'),
     [Input('data', 'children')])
 def update_read_table(filtered_data):
-    if filtered_data == None:
+    if filtered_data == -1:
         print("No filtered_data")
-        return dash.no_update()
+        return dash.no_update
     updated_data = pd.read_json(filtered_data, orient='split')
     table = dbc.Table.from_dataframe(
         updated_data, striped=True, bordered=True, hover=True)
@@ -56,6 +53,7 @@ def update_read_table(filtered_data):
     Output('sort_table', 'children'),
     [Input('data', 'children')])
 def update_sort_table(filtered_data):
+    print(filtered_data)
     updated_data = pd.read_json(filtered_data, orient='split')
     sorted_data = ctrl.sort_volume(updated_data)
     table = dbc.Table.from_dataframe(
@@ -102,7 +100,7 @@ def update_analysis_view(data):
                Input('year_selection', 'value')])
 def display_page(pathname, data, year):
     if (year or data) == None or (year or data) == "":
-        return "PLEASE SELECT A TYPE OF DATA AND YEAR", {'color': 'danger'}
+        return "PLEASE SELECT A TYPE OF DATA AND YEAR"
     if pathname == "/":
         return 'WELCOME'
     elif pathname == '/read':

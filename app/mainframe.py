@@ -12,15 +12,15 @@ class Mainframe():
     '''
 
     def __init__(self, db_name="default", local=True):
-        self.data_frames = []
-        self.db_name = db_name
-        self.cluster = False
-        self.local = local
+        self.data_frames = []  # data to be loadedNavLink
+        self.db_name = db_name  # database name
+        self.cluster = False  # is cluster already connected?
+        self.local = local  # send data to local database
 
     def load_data(self, name):
         data_frame = pd.read_csv(name)
-        head, tail = path.split(name)
-        data_frame.name = tail.split('.')[0]
+        head, tail = path.split(name)  # get file name
+        data_frame.name = tail.split('.')[0]  # remove '.csv'
         print("Loading: "+data_frame.name)
         self.data_frames.append(data_frame)
 
@@ -61,8 +61,6 @@ class Mainframe():
             self.init_db()
         print("Dropping DB named: " + self.db_name)
         self.cluster.drop_database(self.db_name)
-
-    # TODO: move follow to a pandas type class?
 
     def get_collection(self, name, query={}, no_id=True, no_index=True):
         print(
