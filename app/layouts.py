@@ -111,10 +111,10 @@ sort_view = html.Div(
 
 map_view = html.Div(
     [
-        # html.H4('MAP PAGE'),
-        # html.Hr(),
+        html.H4('MAP PAGE'),
+        html.Hr(),
         html.Iframe(id='map_view', srcDoc=open(
-            './assets/map.html', 'r').read(), height='1200')
+            './assets/map.html', 'r').read(), height=600, width=900, style={'position': 'absolute'})
     ],
     style=CONTENT_STYLE
 )

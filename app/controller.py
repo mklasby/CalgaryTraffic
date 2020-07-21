@@ -37,16 +37,19 @@ class Controller():
         print('Sorted Collection')
         return vol
 
-    def get_incident(self, name, year='2016'):
+    def get_incident(self, name='incidents', year='2016', sort=False):
         name = self.find_table(name)
         if year == 'all':
             incidents = self.mainframe.get_collection(name)
         else:
             incidents = self.mainframe.get_collection(
                 name, {"START_DT": {'$regex': year}})
+        if sort:
+            sort_inc(self, incidents)
         return incidents
-        # TODO:HOW TO SORT?
-        # incidents = incidents.sort_values(by="")
+
+    def sort_inc(self, incidents):
+        print(incdents)
 
     def get_view(self, df, name="temp.html"):
         return df.to_html(name)
