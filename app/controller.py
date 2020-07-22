@@ -3,6 +3,7 @@
 data model.
 '''
 import folium
+from folium.plugins import MarkerCluster
 import re
 import pandas as pd
 import plotly.graph_objects as go
@@ -33,7 +34,7 @@ class Controller():
             return -1
 
     def get_data(self, data_children, sort=False):
-        '''Top level controller method for getting requested data tables based on 
+        '''Top level controller method for getting requested data tables based on
         user inputs passed from callbacks.py'''
         switch = data_children[0]
         data = data_children[1]
@@ -115,7 +116,7 @@ class Controller():
 
     def sort_inc(self, incidents):
         '''Method adds "Number of Accidents" column to incidents dataframe which
-         will = the number of rowswith the same 'INCIDENT INFO' value. 
+         will = the number of rowswith the same 'INCIDENT INFO' value.
          Returns sorted pd.DataFrame object'''
         dict_hist = {}
         incidents.insert(1, 'Number of Accidents', "")
@@ -250,7 +251,7 @@ class Controller():
         return fig
 
     def get_map(self, data_children, n=10):
-        '''Top level Controller method for getting map based on user selected parameters 
+        '''Top level Controller method for getting map based on user selected parameters
         passed by callbacks.py. Updates static map asset in ./assets/map.html
         returns None'''
         switch = data_children[0]
@@ -262,7 +263,7 @@ class Controller():
             self.draw_vol_map(volume_dataframe)
 
         else:  # data=='inc'
-            incident_dataframe = self.get_inc_map_df(switch, year, n)
+            incident_dataframe = self.get_inc_map_df(switch, year, n=1)
             self.draw_inc_map(incident_dataframe, year)
 
     def rgb_to_hex(self, rgb):
@@ -271,7 +272,7 @@ class Controller():
         # This line says get hexidecimal by parsing three items from tuple
         return '#'+'%02x%02x%02x' % rgb
 
-    def get_inc_map_df(self, switch='total', year='2016', n=10):
+    def get_inc_map_df(self, switch='total', year='2016', n=1):
         '''get inc df for map drawing
         @params
         @returns inc df
@@ -279,19 +280,22 @@ class Controller():
         incident_frame = self.get_incident(
             'Traffic_Incidents', year=year, sort=False)
         incident_frame = self.sort_inc(incident_frame)
+        pd.set_option('display.max_rows', None, 'display.max_columns', None)
         if switch == 'total':
             return incident_frame
         else:  # switch == max
             accident_numbers = []
             last_idx = 0
             for index, item in incident_frame.iterrows():
-                if len(accident_numbers) >= 10:
-                    break
-                last_idx += 1
+                if len(accident_numbers) != 0:
+                    if item['Number of Accidents'] != accident_numbers[n-1]:
+                        break
                 if item['Number of Accidents'] in accident_numbers:
+                    last_idx += 1
                     continue
                 else:
                     accident_numbers.append(item['Number of Accidents'])
+                    last_idx += 1
             incident_frame = incident_frame.iloc[:last_idx]
             return incident_frame
 
@@ -315,6 +319,9 @@ class Controller():
         g = 0
         b = 0
         last_accident_count = -1
+        locations = []
+        popups = []
+        icons = []
         for index, items in incident_frame.iterrows():
             info = items['INCIDENT INFO']
             desc = items['DESCRIPTION']
@@ -329,8 +336,13 @@ class Controller():
                 g += step
                 last_accident_count = acc
             color = self.rgb_to_hex((r, g, b))
-            folium.map.Marker(location=[lat, lon],
-                              popup=f'{desc}\n {info}\n {date}\n {acc} Total accidents in this zone', icon=folium.Icon(icon='car', prefix='fa', icon_color=color)).add_to(calgary_map)
+            locations.append([lat, lon])
+            popups.append(
+                f'{desc}\n {info}\n {date}\n {acc} Total accidents in this zone')
+            icons.append(folium.Icon(
+                icon='car', prefix='fa', icon_color=color))
+        marker_cluster = folium.plugins.MarkerCluster(
+            locations, popups, icons).add_to(calgary_map)
         print(f"Saving total incident {year} map")
         calgary_map.save('./assets/map.html', zoom_start=5)
         return calgary_map

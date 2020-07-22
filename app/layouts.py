@@ -92,11 +92,9 @@ sidebar = html.Div(
             html.Div(id='alert_container'),
         ]),
 
-        html.Div(id='test_data'),
-
         # HIDDEN DIV USED TO STORE FILTERED DATA ACROSS PAGES
         # SEE: https://dash.plotly.com/sharing-data-between-callbacks
-        html.Div(id='data')  # , style={'display': 'none'}),
+        html.Div(id='data', style={'display': 'none'}),
     ],
     style=SIDEBAR_STYLE,
 )
@@ -106,13 +104,14 @@ home = html.Div(
         html.H4('HOME PAGE'),
         html.Hr(),
         html.Div(id='content'),
+        # TODO: add image?
     ],
     style=CONTENT_STYLE
 )
 
 read_view = html.Div(
     [
-        html.H4('READ PAGE'),
+        html.H4('REQUESTED DATA'),
         html.Hr(),
         html.Div(id='read_table')  # container target for callback response
     ],
@@ -121,7 +120,7 @@ read_view = html.Div(
 
 sort_view = html.Div(
     [
-        html.H4('SORT PAGE'),
+        html.H4('SORTED DATA'),
         html.Hr(),
         html.Div(id='sort_table'),
     ],
