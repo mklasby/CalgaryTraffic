@@ -168,6 +168,7 @@ class Controller():
 
         else:  # switch = totals, get top result and that result from each year
             # will return single row DF for vol or multi-row DF for inc
+            # TODO; Wrap the below into a function to be called with parameters indicating vol or inc or even table headers
             this_year = self.get_data(
                 ('total', data, year), True)  # sorted df
             data_16 = self.get_data(('total', data, '2016'), True)
@@ -175,45 +176,71 @@ class Controller():
             data_18 = self.get_data(('total', data, '2018'), True)
             years = [data_16, data_17, data_18]
             top = {}
+            top2 = {}
+            n = 10
             if data == 'inc':
-                for index, item in this_year.iterrows():
-                    if len(top) >= 10:  # get top ten
-                        break
-                    if item['INCIDENT INFO'] in top:
-                        continue
-                    else:
-                        # {info: {year:value}}
-                        top[item['INCIDENT INFO']] = {
-                            year: item["Number of Accidents"]}
-                year_index = 2015
-                for date in years:
-                    year_index += 1
-                    print(f'checking {year_index}')
-                    if year_index > 2018:
-                        break
-                    for index, item in date.iterrows():
-                        if item['INCIDENT INFO'] in top:
-                            print(
-                                f"match on {item['INCIDENT INFO']} from {year_index}")
-                            if str(year_index) in top[item['INCIDENT INFO']]:
-                                print(
-                                    f"found {year_index} in {top[item['INCIDENT INFO']]}, skipping...")
-                                continue
-                            else:
-                                top[item['INCIDENT INFO']][str(
-                                    year_index)] = item['Number of Accidents']
-                fig = go.Figure()
-                print(year)
-                for info in list(top.keys()):
-                    fig_dict = {
-                        'Year': list(top[info].keys()), 'Number of Accidents': list(top[info].values())}
-                    fig.add_trace(go.Scatter(
-                        x=fig_dict['Year'], y=fig_dict['Number of Accidents'], name=info, hoverinfo='all'))
-                fig.update_layout(title=f'Most dangerous locations to be driving in Calgary in {year} plotted from 2016-2018',
+                top = self.get_top_n(
+                    this_year, n, 'INCIDENT INFO', year, 'Number of Accidents')
+                top = self.check_other_years(
+                    top, year, years, 'INCIDENT INFO', 'Number of Accidents')
+                fig = self.get_scatter_fig(top, 'Year', 'Number of Accidents')
+                fig.update_layout(title=f'Most dangerous {n} locations to be driving in Calgary in {year} plotted from 2016-2018',
                                   xaxis_title='Year', yaxis_title='Number of Accidents', legend_title='Incident Info')
                 return fig
-            else:  # data == volume TODO
-                return None
+            else:  # data == volume
+                top = self.get_top_n(this_year, n, 'secname', year, 'volume')
+                top = self.check_other_years(
+                    top, year, years, 'secname', 'volume')
+                fig = self.get_scatter_fig(top, 'Year', 'Volume of Traffic')
+                fig.update_layout(title=f'Busiest {n} sectors in Calgary in {year} plotted from 2016-2018',
+                                  xaxis_title='Year', yaxis_title='Volume of Traffic', legend_title='Sector Names')
+                return fig
+
+    def get_top_n(self, df: pd.DataFrame, n: int, master_key: str, secondary_key: str, value: str):
+        '''Method returns 2D dictionary from dataframe of top n entires of df in form of {master_key: {secondary_key:value}}'''
+        top = {}
+        for index, item in df.iterrows():
+            if len(top) >= n:  # get top n
+                break
+            if item[master_key] in top:
+                continue
+            else:
+                # {secname: {year:volume}}
+                top[item[master_key]] = {
+                    secondary_key: item[value]}
+        return top
+
+    def check_other_years(self, top: dict, year: str, years: list, master_key: str, value: str):
+        # check for other years
+        year_index = 2015
+        year_stop = 2018
+        for date in years:
+            year_index += 1
+            if year_index > year_stop:
+                break
+            for index, item in date.iterrows():
+                if item[master_key] in top:
+                    if str(year_index) in top[item[master_key]]:
+                        continue
+                    else:
+                        top[item[master_key]][str(
+                            year_index)] = item[value]
+        return top
+
+    def get_scatter_fig(self, top: dict, x_values: str, y_values: str):
+        '''Method gets scatter plot from 2D dictionary, returns go.Figure() object'''
+        fig = go.Figure()
+        for info in list(top.keys()):
+            fig_dict = {
+                x_values: list(top[info].keys()), y_values: list(top[info].values())}
+            sorted_years = sorted(fig_dict[x_values])
+            sorted_accidents = [accident for _, accident in sorted(
+                zip(fig_dict[x_values], fig_dict[y_values]), key=lambda x:x[0])]
+            fig_dict = {x_values: sorted_years,
+                        y_values: sorted_accidents}
+            fig.add_trace(go.Scatter(
+                x=fig_dict[x_values], y=fig_dict[y_values], name=info, hoverinfo='all'))
+        return fig
 
     def rgb_to_hex(self, rgb):
         '''Method converts (r,g,b) to hex color'''

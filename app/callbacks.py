@@ -81,7 +81,6 @@ def update_sort_table(data_children):
 def update_analysis_view(data_children):
     # GET TOP 10 FOR ANNUAL COUNTS
     fig = ctrl.get_fig(data_children, n=10)
-    print(type(fig))
     return dcc.Graph(figure=fig, style={'height': '800px', 'width': '1000px'})
 
 
