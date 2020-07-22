@@ -84,49 +84,29 @@ def update_analysis_view(data_children):
     return dcc.Graph(figure=fig, style={'height': '800px', 'width': '1000px'})
 
 
-# # update analysis_view
-# @ app.callback(
-#     Output('analysis_view', 'children'),
-#     [Input('data_selection', 'value')])
-# def update_analysis_view(data):
-#     if data == 'inc':
-#         inc_16 = ctrl.get_incident('Traffic_Incidents', '2016')
-#         sum_16 = len(inc_16)
-#         inc_17 = ctrl.get_incident('Traffic_Incidents', '2017')
-#         sum_17 = len(inc_17)
-#         inc_18 = ctrl.get_incident('Traffic_Incidents', '2018')
-#         sum_18 = len(inc_18)
-#         y_axis_title = 'Total Automobile Incidents'
-#     elif data == 'vol':
-#         y_axis = "Total "
-#         vol_16 = ctrl.get_volume('2016')
-#         sum_16 = vol_16.get('volume').sum()
-#         vol_17 = ctrl.get_volume('2017')
-#         sum_17 = vol_17.get('volume').sum()
-#         vol_18 = ctrl.get_volume('2018')
-#         sum_18 = vol_18.get('volume').sum()
-#         y_axis_title = 'Total Automobile Volume'
-#     else:
-#         fig = None
-#     fig_dict = {'Year': [2016, 2017, 2018],
-#                 y_axis_title: [sum_16, sum_17, sum_18]}
-#     fig = px.scatter(fig_dict, x='Year', y=y_axis_title, trendline='ols')
-#     return dcc.Graph(figure=fig)
-
-
 # update map view
+# TODO: Update test_data to data
 @ app.callback(
     Output('map_view', 'children'),
-    [Input('data_selection', 'value'),
-     Input('year_selection', 'value')])
-def update_map(data, year):
-    print(f'From map view callback {year} {data}')
-    if data == 'inc':
-        ctrl.get_inc_map(year=year)
-    if data == 'vol':
-        ctrl.get_vol_map(year=year)
-    return html.Iframe(srcDoc=open(
-        './assets/map.html', 'r').read(), height=600, width=900, style={'position': 'absolute'})
+    [Input('test_data', 'children')])
+def update_map(data_children):
+    ctrl.get_map(data_children, n=10)
+    n = 10
+    data = data_children[1]
+    if data == "inc":
+        data = "Automobile Accidents"
+    else:
+        data = "Automobile Volume"
+    year = data_children[2]
+    switch = data_children[0]
+    if switch == 'total':
+        switch = 'Annual Totals'
+    else:
+        switch = "Annual Maximum"
+    return (html.H4(f'Map of {switch} {data} in {year}'),
+            html.Hr(),
+            html.Iframe(srcDoc=open(
+                './assets/map.html', 'r').read(), height=700, width=1000, style={'position': 'absolute'}))
 
 # update status bar depending on page
 # TODO: Add exception handling

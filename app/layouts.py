@@ -130,10 +130,7 @@ sort_view = html.Div(
 
 map_view = html.Div(
     [
-        html.H4('MAP PAGE'),
-        html.Hr(),
         html.Div(id='map_view')
-
     ],
     style=CONTENT_STYLE
 )
