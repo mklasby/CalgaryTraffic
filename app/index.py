@@ -1,7 +1,16 @@
+'''FRONTEND NAVIGATION AND APP ENTRY POINT
+Entry module for app. Index will be called on entry to home page. Starts flask
+server and acts as router to generate new page-content on input from NavLinks in 
+layouts.py
+See: See dash user guide: https://dash.plotly.com/
+App layout based on: https://dash.plotly.com/urls
+TODO: Add __init__.py to load index if app is packaged as module 
+NOTE: Total lines of code for complete project: 858
+'''
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-from app import app, mainframe, ctrl
+from app import app, ctrl
 from layouts import *
 import callbacks
 

@@ -1,4 +1,8 @@
-# data.py - model
+''' MODEL - BACKEND DATABASE FUNCTIONS
+This module loads and querys the database at the request of the controller. Loading
+of data is automatically booted in the app.py file when called by index.py
+See: https://pymongo.readthedocs.io/en/stable/
+'''
 
 from pymongo import MongoClient
 import pandas as pd

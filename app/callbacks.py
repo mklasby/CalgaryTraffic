@@ -1,7 +1,17 @@
+'''
+FRONT END DISPATCHER - PART OF CONTROLLER
+This module recieves input calls from layout fields and outputs updated data based on user selections
+See dash user guide: https://dash.plotly.com/
+TODO: Optimize performance with flash-cacheing and memoization. 
+See: https://dash.plotly.com/performance 
+TODO: Consider pre-rendering map and graphs as static assets. 
+'''
+
+
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
-from app import app, mainframe, ctrl
+from app import app, ctrl
 import pandas as pd
 import plotly.express as px
 import dash_html_components as html
@@ -81,7 +91,7 @@ def update_map(data_children):
     return (html.H4(f'Map of {switch} {data} by location in {year}'),
             html.Hr(),
             html.Iframe(srcDoc=open(
-                './assets/map.html', 'r').read(), height=700, width=1000, style={'position': 'absolute'}))
+                './assets/map.html', 'r').read(), height=600, width=1000, style={'position': 'absolute'}))
 
 
 # update status bar depending on page

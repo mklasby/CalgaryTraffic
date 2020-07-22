@@ -1,6 +1,7 @@
-# controller.py - controller
-'''This module provides app.py with a controller interface to interact with
-data model.
+''' BACK END CONTROLLER MODULE - BRAINS OF APP
+This module is the controller interface to interact with mainframe data model.
+Computational intensive operations are carried out here. 
+TODO: Optimize performance on pd.DataFrame sorting and parsing. See:https://realpython.com/fast-flexible-pandas/
 '''
 import folium
 from folium.plugins import MarkerCluster

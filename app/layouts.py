@@ -1,4 +1,9 @@
-# Views
+''' VIEWS - STATIC CONTENT AND TARGET CONTAINERS FOR DYNAMIC CONTENT
+Layout module for generating HTML views. This file also defines the html.Div 
+id tags which are the targets of Ouput from callback functions
+See: https://dash.plotly.com/
+App layout based on: https://dash.plotly.com/urls
+'''
 
 from mainframe import Mainframe
 from controller import Controller
@@ -29,6 +34,7 @@ CONTENT_STYLE = {
     'margin-right': '4rem',
     'padding': '4rem 2rem',
 }
+# side bar div container
 sidebar = html.Div(
     [
         html.H4('Calgary Traffic Analysis',

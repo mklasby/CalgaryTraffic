@@ -1,5 +1,6 @@
 # create map.py
 # https://python-visualization.github.io/folium/modules.html#module-folium.map
+# NOT USED
 import folium
 from mainframe import Mainframe
 from controller import Controller
@@ -26,10 +27,3 @@ for index, info, desc, date, mod_date, quad, lon, lat, location, count, id in in
                       popup=f'{desc}\n {info}\n {date}\n').add_to(calgary_map)
 
 calgary_map.save('map.html', zoom_start=10)
-
-
-# for coords, info in geo_data.get('location'), geo_data.get('INCIDENT INFO'):
-#     print(coords, info)
-# # lat = entry.split(',')[0][1:]
-# # longitude = entry.split(',')[1][:-1]
-# # folium.Marker([lat, lon],)
