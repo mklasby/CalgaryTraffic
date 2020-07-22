@@ -5,6 +5,7 @@ data model.
 import folium
 import re
 import pandas as pd
+import plotly.graph_objects as go
 import plotly.express as px
 CALGARY = (51.0447, -114.0719)
 
@@ -185,12 +186,12 @@ class Controller():
                         top[item['INCIDENT INFO']] = {
                             year: item["Number of Accidents"]}
                 year_index = 2015
-                for year in years:
+                for date in years:
                     year_index += 1
                     print(f'checking {year_index}')
                     if year_index > 2018:
                         break
-                    for index, item in year.iterrows():
+                    for index, item in date.iterrows():
                         if item['INCIDENT INFO'] in top:
                             print(
                                 f"match on {item['INCIDENT INFO']} from {year_index}")
@@ -201,12 +202,17 @@ class Controller():
                             else:
                                 top[item['INCIDENT INFO']][str(
                                     year_index)] = item['Number of Accidents']
-                fig_dict = {'Incident Info': list(top.keys()), 'Year': list(
-                    top.values().keys()), 'Number of Accidents': list(top.values().values())}
-                fig = px.scatter(
-                    fig_dict, x='Year', y='Number of Accidents', hover_data='Incident Info')
+                fig = go.Figure()
+                print(year)
+                for info in list(top.keys()):
+                    fig_dict = {
+                        'Year': list(top[info].keys()), 'Number of Accidents': list(top[info].values())}
+                    fig.add_trace(go.Scatter(
+                        x=fig_dict['Year'], y=fig_dict['Number of Accidents'], name=info, hoverinfo='all'))
+                fig.update_layout(title=f'Most dangerous locations to be driving in Calgary in {year} plotted from 2016-2018',
+                                  xaxis_title='Year', yaxis_title='Number of Accidents', legend_title='Incident Info')
                 return fig
-            else:  # data == volume
+            else:  # data == volume TODO
                 return None
 
     def rgb_to_hex(self, rgb):
