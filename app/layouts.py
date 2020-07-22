@@ -41,6 +41,9 @@ sidebar = html.Div(
         ),
         dcc.Dropdown(
             id='data_selection',
+            clearable=False,
+            persistence=True,
+            persistence_type='session',
             options=[
                 {'label': 'Traffic Volume', 'value': 'vol'},
                 {'label': 'Incidents', 'value': 'inc'},
@@ -49,12 +52,26 @@ sidebar = html.Div(
         ),
         dcc.Dropdown(
             id='year_selection',
+            clearable=False,
+            persistence=True,
+            persistence_type='session',
             options=[
                 {'label': '2016', 'value': '2016'},
                 {'label': '2017', 'value': '2017'},
                 {'label': '2018', 'value': '2018'},
             ],
             value='2016'
+        ),
+        dcc.Dropdown(
+            id='total_switch',
+            clearable=False,
+            persistence=True,
+            persistence_type='session',
+            options=[
+                {'label': 'Annual Totals', 'value': 'total'},
+                {'label': 'Annual Maximums', 'value': 'max'},
+            ],
+            value='max',
         ),
         dbc.Nav(
             [
@@ -75,9 +92,11 @@ sidebar = html.Div(
             html.Div(id='alert_container'),
         ]),
 
+        html.Div(id='test_data'),
+
         # HIDDEN DIV USED TO STORE FILTERED DATA ACROSS PAGES
         # SEE: https://dash.plotly.com/sharing-data-between-callbacks
-        html.Div(id='data', style={'display': 'none'})
+        html.Div(id='data')  # , style={'display': 'none'}),
     ],
     style=SIDEBAR_STYLE,
 )
@@ -113,16 +132,14 @@ map_view = html.Div(
     [
         html.H4('MAP PAGE'),
         html.Hr(),
-        html.Iframe(id='map_view', srcDoc=open(
-            './assets/map.html', 'r').read(), height=600, width=900, style={'position': 'absolute'})
+        html.Div(id='map_view')
+
     ],
     style=CONTENT_STYLE
 )
 
 analysis_view = html.Div(
     [
-        html.H4('ANALYSIS PAGE'),
-        html.Hr(),
         html.Div(id='analysis_view'),
     ],
     style=CONTENT_STYLE
