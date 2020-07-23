@@ -22,6 +22,7 @@ class Mainframe():
         self.local = local  # send data to local database
 
     def load_data(self, name):
+        '''Method parses .csv file into pd.DataFrame and stores in self.data_frames'''
         data_frame = pd.read_csv(name)
         head, tail = path.split(name)  # get file name
         data_frame.name = tail.split('.')[0]  # remove '.csv'
@@ -37,6 +38,8 @@ class Mainframe():
             print(data.head())
 
     def init_db(self):
+        '''Initilized database. Will connect to local if self.local = True. Stores database client
+        in self.db'''
         if self.local:
             # local cluster
             print("Connecting to local cluster")
@@ -52,6 +55,7 @@ class Mainframe():
         self.db = self.cluster[self.db_name]
 
     def push_data(self):
+        '''pushes all dataframes to db'''
         if not self.cluster:  # if cluster has not be started
             self.init_db()
         for data_frame in self.data_frames:
@@ -61,12 +65,14 @@ class Mainframe():
             collection.insert_many(data_dict)
 
     def drop_db(self, db_name="default"):
+        '''Drops database'''
         if not self.cluster:
             self.init_db()
         print("Dropping DB named: " + self.db_name)
         self.cluster.drop_database(self.db_name)
 
     def get_collection(self, name, query={}, no_id=True, no_index=True):
+        '''Queries database for a collection where name=name and rows matching query'''
         print(
             f"Getting collection {name} from {self.db_name} using query {query}")
         cursor = self.db[name].find(query)
